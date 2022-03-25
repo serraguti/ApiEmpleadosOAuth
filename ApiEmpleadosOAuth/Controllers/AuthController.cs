@@ -4,10 +4,13 @@ using ApiEmpleadosOAuth.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ApiEmpleadosOAuth.Controllers
@@ -46,11 +49,19 @@ namespace ApiEmpleadosOAuth.Controllers
                 SigningCredentials credentials =
                     new SigningCredentials(this.helper.GetKeyToken()
                     , SecurityAlgorithms.HmacSha256);
+                //DENTRO DEL TOKEN PODEMOS ALMACENAR CUALQUIER INFORMACION
+                //EN FORMATO JSON MEDIANTE UN ARRAY LLAMADO claims
+                string jsonEmpleado = JsonConvert.SerializeObject(empleado);
+                Claim[] claims = new[]
+                {
+                    new Claim("UserData", jsonEmpleado)
+                };
                 //ES EL MOMENTO DE GENERAR EL TOKEN
                 //EL TOKEN ESTARA COMPUESTO POR ISSUER, AUDIENCE, CREDENTIALS
                 //TIME
                 JwtSecurityToken token =
                     new JwtSecurityToken(
+                        claims:claims,
                         issuer: this.helper.Issuer,
                         audience: this.helper.Audience,
                         signingCredentials: credentials,

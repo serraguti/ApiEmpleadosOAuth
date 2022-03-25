@@ -41,5 +41,37 @@ namespace ApiEmpleadosOAuth.Repositories
                 return consulta.First();
             }
         }
+
+        //METODO PARA DEVOLVER LOS SUBORDINADOS DE UN EMPLEADO
+        public List<Empleado> GetSubordinados(int idDirector)
+        {
+            var consulta = from datos in this.context.Empleados
+                           where datos.Director == idDirector
+                           select datos;
+            if (consulta.Count() == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return consulta.ToList();
+            }
+        }
+
+        //METODO PARA DEVOLVER LOS EMPLEADOS DE UN DEPARTAMENTO
+        public List<Empleado> GetCompisCurro(int idDepartamento)
+        {
+            var consulta = from datos in this.context.Empleados
+                           where datos.IdDepartamento == idDepartamento
+                           select datos;
+            if (consulta.Count() == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return consulta.ToList();
+            }
+        }
     }
 }
